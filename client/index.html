@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ws</title>
+
+</head>
+<body>
+<h1>ws</h1>
+<button id="requestBtn">获取服务器消息</button>
+<div id="receivedWrapper"></div>    
+
+</body>
+<App></App>
+<script type="text/javascript">
+    var wsServer = 'ws://localhost:3000/';
+    var websocket = new WebSocket(wsServer);
+
+    websocket.onopen = function(){
+        console.log('open WebSocket');     
+    }
+    websocket.onmessage = function(msg){
+        console.log(msg);
+        var receivedWrapper = document.getElementById('receivedWrapper');
+        receivedWrapper.innerHTML = msg.data;
+    }
+
+    var requestBtn = document.getElementById('requestBtn');
+    requestBtn.addEventListener('click', function(){
+    websocket.send('message from client!');
+    }, false); 
+    
+</script>
+</html>
