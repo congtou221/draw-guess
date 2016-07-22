@@ -6,11 +6,11 @@
 </head>
 <body>
 <h1>ws</h1>
-<button id="requestBtn">获取服务器消息</button>
-<div id="receivedWrapper"></div>    
-
-</body>
+<!-- <button id="requestBtn">获取服务器消息</button>
+<div id="receivedWrapper"></div>     -->
 <App></App>
+</body>
+<script type="text/javascript" src="./dist/bundle.js"></script>
 <script type="text/javascript">
     var wsServer = 'ws://localhost:3000/';
     var websocket = new WebSocket(wsServer);
@@ -20,14 +20,14 @@
     }
     websocket.onmessage = function(msg){
         console.log(msg);
-        var receivedWrapper = document.getElementById('receivedWrapper');
-        receivedWrapper.innerHTML = msg.data;
+        // var receivedWrapper = document.getElementById('receivedWrapper');
+        // receivedWrapper.innerHTML = msg.data;
     }
 
-    var requestBtn = document.getElementById('requestBtn');
-    requestBtn.addEventListener('click', function(){
-    websocket.send('message from client!');
-    }, false); 
+    // var requestBtn = document.getElementById('requestBtn');
+    // requestBtn.addEventListener('click', function(){
+    // websocket.send('message from client!');
+    // }, false); 
     
 </script>
 </html>

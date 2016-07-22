@@ -7,6 +7,9 @@ server.listen(3000);
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 })
+app.get('/dist/bundle.js', function(req, res){
+	res.sendFile(__dirname + '/dist/bundle.js');
+})
 // 启动WebSocket服务
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({server : server});

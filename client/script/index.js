@@ -1,8 +1,10 @@
-import Vue from 'vue';
-import App from './App.vue';
+
+import Vue from 'vue'
+import App from './App.vue'
 
 new Vue({
-	el: 'body',
-	template: App,
-	replace: false
+  el: 'body',
+  components: {
+    App
+  }
 })
