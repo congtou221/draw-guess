@@ -3020,7 +3020,10 @@
 			guess: function guess() {
 				this.userId = 2;
 			},
-			clean: function clean() {}
+			replay: function replay() {
+				this.userId = 0;
+				location.reload();
+			}
 		}
 	};
 
@@ -3052,7 +3055,7 @@
 /* 7 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<button v-if = \"this.userId === 0\" @click=\"draw\">draw</button>\n<button v-if = \"this.userId === 1\" @click=\"clean\">clean borad</button>\n<button v-if = \"this.userId === 0\" @click=\"guess\">guess</button>\n<drawing-board v-if = \"this.userId === 1\"></drawing-board>\n<guessing-board v-if = \"this.userId === 2\"></guessing-board>\n";
+	module.exports = "\n<button v-if = \"this.userId === 0\" @click=\"draw\">draw</button>\n<button v-if = \"this.userId === 0\" @click=\"guess\">guess</button>\n<button v-if = \"this.userId === 2\" @click=\"replay\">replay</button>\n<drawing-board v-if = \"this.userId === 1\"></drawing-board>\n<guessing-board v-if = \"this.userId === 2\"></guessing-board>\n";
 
 /***/ }
 /******/ ]);

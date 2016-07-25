@@ -1,7 +1,7 @@
 <template>
 	<button v-if = "this.userId === 0" @click="draw">draw</button>
-	<button v-if = "this.userId === 1" @click="clean">clean borad</button>
 	<button v-if = "this.userId === 0" @click="guess">guess</button>
+	<button v-if = "this.userId === 2" @click="replay">replay</button>
 	<drawing-board v-if = "this.userId === 1"></drawing-board>
 	<guessing-board v-if = "this.userId === 2"></guessing-board>
 </template>
@@ -25,8 +25,9 @@ export default {
 		guess() {
 			this.userId = 2;
 		},
-		clean() {
-			
+		replay() {
+			this.userId = 0;
+			location.reload();
 		}
 	}
 }
