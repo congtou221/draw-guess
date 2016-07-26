@@ -28,5 +28,8 @@ module.exports = {
 				loader: 'vue'
 			}
 		]
+	},
+	resolveLoader: {
+	 modulesDirectories:["node_modules"]
 	}
 }

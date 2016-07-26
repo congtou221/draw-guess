@@ -10,7 +10,8 @@
 import Vue from 'vue'
 
 import DrawingBoard from './component/drawing-board.vue'
-import showingBoard from './component/guessing-board.vue'
+
+import GuessingBoard from './component/guessing-board.vue'
 
 export default {
 	data() {
@@ -29,6 +30,10 @@ export default {
 			this.userId = 0;
 			location.reload();
 		}
+	},
+	components: {
+		'drawing-board' : DrawingBoard,
+		'guessing-board' : GuessingBoard
 	}
 }
 </script>

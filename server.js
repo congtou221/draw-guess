@@ -1,3 +1,4 @@
+'use strict';
 // 构建http服务器
 var app = require('express')(), 
 	server = require('http').createServer(app);
@@ -11,16 +12,30 @@ app.get('/dist/bundle.js', function(req, res){
 	res.sendFile(__dirname + '/dist/bundle.js');
 })
 // 启动WebSocket服务
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({server : server});
+const WebSocketServer = require('ws').Server;
+const wss = new WebSocketServer({server : server});
+let keywordsArr = ['Dog', 'Money', 'Cat', 'Bird'];
 
+let keyWord = ((arr) => {
+	let num = Math.floor(Math.random()*keywordsArr.length);
+	return arr[num];
+})(keywordsArr)
 
 wss.on('connection', function connection(ws){
 	console.log('success connect!');
-	ws.on('message', function incoming(msg){
-		console.log('received: %s', msg);
 
-		ws.send('something');
+	ws.send('keyword:' + keyWord);
+
+	ws.on('message', function incoming(msg){
+		if(msg === keyWord){
+			wss.client.forEach(client => {
+				client.send('success: You got it!')
+			})
+			return;
+		}
+		wss.clients.forEach(client => {
+			client.send(msg);
+		})		
 	})
 	
 	ws.on('close', function closing(){
