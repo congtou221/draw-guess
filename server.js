@@ -1,7 +1,7 @@
 'use strict';
 // 构建http服务器
-var app = require('express')(), 
-	server = require('http').createServer(app);
+const app = require('express')();
+const server = require('http').createServer(app);
 
 server.listen(3000);
 
@@ -14,7 +14,7 @@ app.get('/dist/bundle.js', function(req, res){
 // 启动WebSocket服务
 const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({server : server});
-let keywordsArr = ['Dog', 'Money', 'Cat', 'Bird'];
+let keywordsArr = ['dog', 'money', 'cat', 'bird'];
 
 let keyWord = ((arr) => {
 	let num = Math.floor(Math.random()*keywordsArr.length);
@@ -24,20 +24,34 @@ let keyWord = ((arr) => {
 wss.on('connection', function connection(ws){
 	console.log('success connect!');
 
-	ws.send('keyword:' + keyWord);
-
 	ws.on('message', function incoming(msg){
 		if(msg === keyWord){
-			wss.client.forEach(client => {
-				client.send('success: You got it!')
+			wss.clients.forEach(client => {
+				client.send('answer: success!')
 			})
 			return;
 		}
-		wss.clients.forEach(client => {
-			client.send(msg);
-		})		
+		if(msg.indexOf('position') >= 0){
+			wss.clients.forEach(client => {
+				client.send(msg);
+			})
+		}
+		if(msg === 'clean'){
+			wss.clients.forEach(client => {
+				client.send(msg);
+			})
+		}
+		if(typeof msg === 'string'){
+			wss.clients.forEach(client => {
+				client.send(msg);
+			})			
+		}		
 	})
 	
+	wss.clients.forEach(client => {
+		client.send('keyword: ' + keyWord);
+	})
+
 	ws.on('close', function closing(){
 		console.log('stopping client');
 	})

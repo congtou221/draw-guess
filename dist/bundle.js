@@ -3095,7 +3095,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n#drawingBoard{\r\n\tbackground-color: blue;\r\n\tcursor: crosshair;\r\n}\r\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n#drawingBoard{\r\n\tbackground-color: blue;\r\n\tcursor: crosshair;\r\n}\r\n", ""]);
 
 	// exports
 
@@ -3397,97 +3397,110 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Draw = function () {
-		function Draw(ws) {
-			(0, _classCallCheck3.default)(this, Draw);
-
-			this.canvas = document.getElementById('drawingBoard');
-			this.ctx = this.canvas.getContext('2d');
-			this.webSocket = ws;
-			this.stageInfo = this.canvas.getBoundingClientRect();
-			this.cleanBtn = document.getElementById('clean');
-		}
-
-		(0, _createClass3.default)(Draw, [{
-			key: 'init',
-			value: function init() {
-				var _this = this;
-
-				this.canvas.onmousedown = function () {
-					_this.drawBegin(event);
-				};
-
-				this.canvas.onmouseup = function () {
-					_this.drawEnd();
-				};
-
-				this.cleanBtn.onclick = function () {
-					_this.cleanBoard();
-				};
-			}
-		}, {
-			key: 'drawBegin',
-			value: function drawBegin(e) {
-				var _this2 = this;
-
-				var stageLeft = this.stageInfo.left;
-				var stageTop = this.stageInfo.top;
-				var beginX = e.clientX - stageLeft;
-				var beginY = e.clientY - stageTop;
-
-				this.webSocket.send('begin to draw');
-
-				this.ctx.beginPath();
-				this.ctx.moveTo(beginX, beginY);
-				this.webSocket.send('beginX:' + beginX + ',beginY:' + beginY);
-
-				this.canvas.onmousemove = function () {
-					_this2.drawing(event);
-				};
-			}
-		}, {
-			key: 'drawing',
-			value: function drawing(e) {
-				var stageLeft = this.stageInfo.left;
-				var stageTop = this.stageInfo.top;
-				var pencilX = e.clientX - stageLeft;
-				var pencilY = e.clientY - stageTop;
-
-				this.ctx.lineTo(pencilX, pencilY);
-				this.ctx.stroke();
-
-				this.webSocket.send('x:' + pencilX + ',y:' + pencilY);
-			}
-		}, {
-			key: 'drawEnd',
-			value: function drawEnd() {
-				this.canvas.onmousemove = null;
-			}
-		}, {
-			key: 'cleanBoard',
-			value: function cleanBoard() {
-				this.ctx.clearRect(0, 0, 520, 350);
-			}
-		}]);
-		return Draw;
-	}();
-
 	exports.default = {
 		ready: function ready() {
 
 			var wsServer = 'ws://localhost:3000/';
 			var webSocket = new WebSocket(wsServer);
-			var canvas = new Draw(webSocket);
+			var Canvas = this.draw();
+			var canvas = new Canvas(webSocket);
 
 			webSocket.onopen = function () {
 				canvas.init();
 			};
 			webSocket.onmessage = function (msg) {
 				var keywords = document.querySelector('#keyword');
-				var msgArray = msg.data.split(':');
+				var msgArr = msg.data.split(':');
+				var msgKey = msgArr[0];
+				var msgVal = msgArr[1];
 
-				keywords.innerHTML = msgArray[0] === 'keyword' && msgArray[1];
+				if (msgKey === 'answer') {
+					alert(msgVal);
+				} else if (msgKey === 'position') {} else if (msgKey === 'keyword') {
+					keywords.innerHTML = msgVal;
+				} else if (msgKey === 'clean') {} else if (msgKey === 'end') {} else {
+					throw "wrong message!";
+				}
 			};
+		},
+
+		methods: {
+			draw: function draw() {
+				return function () {
+					function Canvas(ws) {
+						(0, _classCallCheck3.default)(this, Canvas);
+
+						this.canvas = document.getElementById('drawingBoard');
+						this.ctx = this.canvas.getContext('2d');
+						this.webSocket = ws;
+						this.stageInfo = this.canvas.getBoundingClientRect();
+						this.cleanBtn = document.getElementById('clean');
+					}
+
+					(0, _createClass3.default)(Canvas, [{
+						key: 'init',
+						value: function init() {
+							var _this = this;
+
+							this.canvas.onmousedown = function () {
+								_this.drawBegin(event);
+							};
+
+							this.canvas.onmouseup = function () {
+								_this.drawEnd();
+							};
+
+							this.cleanBtn.onclick = function () {
+								_this.cleanBoard();
+							};
+						}
+					}, {
+						key: 'drawBegin',
+						value: function drawBegin(e) {
+							var _this2 = this;
+
+							var stageLeft = this.stageInfo.left;
+							var stageTop = this.stageInfo.top;
+							var beginX = e.clientX - stageLeft;
+							var beginY = e.clientY - stageTop;
+
+							this.ctx.beginPath();
+							this.ctx.moveTo(beginX, beginY);
+							this.webSocket.send('position:beginX,' + beginX + ';beginY,' + beginY);
+
+							this.canvas.onmousemove = function () {
+								_this2.drawing(event);
+							};
+						}
+					}, {
+						key: 'drawing',
+						value: function drawing(e) {
+							var stageLeft = this.stageInfo.left;
+							var stageTop = this.stageInfo.top;
+							var pencilX = e.clientX - stageLeft;
+							var pencilY = e.clientY - stageTop;
+
+							this.ctx.lineTo(pencilX, pencilY);
+							this.ctx.stroke();
+
+							this.webSocket.send('position:x,' + pencilX + ';y,' + pencilY);
+						}
+					}, {
+						key: 'drawEnd',
+						value: function drawEnd() {
+							this.canvas.onmousemove = null;
+							this.webSocket.send('end');
+						}
+					}, {
+						key: 'cleanBoard',
+						value: function cleanBoard() {
+							this.ctx.clearRect(0, 0, 520, 350);
+							this.webSocket.send('clean');
+						}
+					}]);
+					return Canvas;
+				}();
+			}
 		}
 	};
 
@@ -3856,7 +3869,7 @@
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<canvas id=\"drawingBoard\" width=\"520\" height=\"350\"></canvas>\n<div>\n\t<span>KeyWord:</span>\n\t<span id=\"keyword\"></span>\n</div>\n<button id=\"clean\">清空画布</button>\n";
+	module.exports = "\n\n<canvas id=\"drawingBoard\" width=\"520\" height=\"350\"></canvas>\n<div>\n\t<span>KeyWord:</span>\n\t<span id=\"keyword\"></span>\n\t<button id=\"clean\">清空画布</button>\n</div>\n\n";
 
 /***/ },
 /* 32 */
@@ -3922,7 +3935,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n#guessingBoard{\r\n\tbackground-color: pink;\r\n}\r\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n#guessingBoard{\r\n\tbackground-color: pink;\r\n}\r\n", ""]);
 
 	// exports
 
@@ -3949,20 +3962,35 @@
 			this.ctx = this.canvas.getContext('2d');
 
 			webSocket.onmessage = function (msg) {
-				_this.repeat(msg);
+				var msgArr = msg.data.split(':');
+				var msgKey = msgArr[0];
+				var msgVal = msgArr[1];
+
+				if (msgKey === 'answer') {
+					alert(msgVal);
+				} else if (msgKey === 'position') {
+					_this.repeat(msgVal);
+				} else if (msgKey === 'keyword') {} else if (msgKey === 'clean') {
+					_this.cleanBoard(webSocket);
+				} else if (msgKey === 'end') {
+					_this.endRepeat();
+				} else {
+					throw "wrong message!";
+				}
 			};
 
 			var submitBtn = document.querySelector('#submitBtn');
+
 			submitBtn.onclick = function () {
-				_this.checkAnswer();
+				_this.checkAnswer(webSocket);
 			};
 		},
 
 		methods: {
 			repeat: function repeat(msg) {
-				var pencilCoord = msg.data.split(',');
-				var pencilX = pencilCoord[0].split(':');
-				var pencilY = pencilCoord[1].split(':');
+				var pencilCoord = msg.split(';');
+				var pencilX = pencilCoord[0].split(',');
+				var pencilY = pencilCoord[1].split(',');
 
 				if (pencilX[0] === 'beginX' && pencilY[0] === 'beginY') {
 					this.beginX = pencilX[1];
@@ -3971,9 +3999,9 @@
 					this.beginRepeat();
 					return;
 				}
+
 				this.x = pencilX[1];
 				this.y = pencilY[1];
-
 				this.repeating();
 			},
 			beginRepeat: function beginRepeat() {
@@ -3983,9 +4011,22 @@
 				ctx.moveTo(this.beginX, this.beginY);
 			},
 			repeating: function repeating() {
+				var ctx = this.ctx;
+
 				ctx.lineTo(this.x, this.y);
+				ctx.stroke();
 			},
-			checkAnswer: function checkAnswer() {}
+			endRepeat: function endRepeat() {
+				var ctx = this.ctx;
+				ctx.onmousemove = null;
+			},
+			checkAnswer: function checkAnswer(ws) {
+				var answer = document.querySelector('#answer').value.toLowerCase();
+				ws.send(answer);
+			},
+			cleanBoard: function cleanBoard(ws) {
+				this.ctx.clearRect(0, 0, 520, 350);
+			}
 		}
 	};
 
@@ -3993,13 +4034,13 @@
 /* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<canvas id=\"guessingBoard\" width=\"520\" height=\"350\"></canvas>\n<div>\n\t<input type=\"text\" /><button id=\"submitBtn\">Submit Answer</button>\n</div>\n";
+	module.exports = "\n<canvas id=\"guessingBoard\" width=\"520\" height=\"350\"></canvas>\n<div>\n\t<input type=\"text\" id=\"answer\"/><button id=\"submitBtn\">Submit Answer</button>\n</div>\n";
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<button v-if = \"this.userId === 0\" @click=\"draw\">draw</button>\n<button v-if = \"this.userId === 0\" @click=\"guess\">guess</button>\n<button v-if = \"this.userId === 2\" @click=\"replay\">replay</button>\n<drawing-board v-if = \"this.userId === 1\"></drawing-board>\n<guessing-board v-if = \"this.userId === 2\"></guessing-board>\n";
+	module.exports = "\n<button v-if = \"this.userId === 0\" @click=\"draw\">draw</button>\n<button v-if = \"this.userId === 0\" @click=\"guess\">guess</button>\n\n<drawing-board v-if = \"this.userId === 1\"></drawing-board>\n<guessing-board v-if = \"this.userId === 2\"></guessing-board>\n\n<button v-if = \"this.userId !== 0\" @click=\"replay\">replay</button>\n";
 
 /***/ }
 /******/ ]);
